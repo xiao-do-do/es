@@ -264,5 +264,115 @@ GET product/_search
 bool 组合查询
 must,shoule会计算相关度评分， filter,must_not不计算评分
  
+ GET product/_search
+{
+    "query":{
+        "bool":{
+            must:[
+               {
+                 "match":{
+                    "name":"xiaomi"
+                 }, 
+                  "match":{
+                     "name":"xiaomi"
+                 }
+               }
+            }
+        },
+    }
+}
+
+bool must多个条件必须得同时满足， must查询有socre字段，如果系替换Must为filter则没有score=0
+--------------------------------------------
+
+
+ GET product/_search
+{
+    "query":{
+        "bool":{
+            must_not:[
+               {
+                 "match":{
+                    "name":"xiaomi"
+                 }, 
+                  "match":{
+                     "name":"xiaomi"
+                 }
+               }
+            }
+        },
+    }
+}
+与上面结果互补,排除上面的结果
+--------------------------------------
+
+
+ GET product/_search
+{
+    "query":{
+        "bool":{
+            should:[
+               {
+                 "match":{
+                    "name":"xiaomi"
+                 }
+               }
+            }
+        },
+    }
+}
+ or关系，0个，数个就行
+ ------------------------------------
+ 
+ bool 组合查询
+ 
+  GET product/_search
+{
+    "query":{
+        "bool":{
+            must:[
+               {
+                 "match":{
+                    "name":"xiaomi"
+                 }
+               }
+            ],
+            filter:[
+               {
+                 "match":{
+                    "name":"nfc"
+                 }
+               }
+            ],
+        },
+    }
+}
+and关系
+filter频繁查询会被缓存，filter不会排序所以先filter过滤数据（不做评分），再排序可以提交效率。
+----------------------------
+should 再有Must或filter的时候可以一个都不满足，可以minimum_should_match=0
+如果想让should生效，可以minimum_should_match:'1'
+
+如果没有must,filter则默认为1
+设置should必须满足一个条件
+
+接
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+
+
+
+
+ 
 
 ```
